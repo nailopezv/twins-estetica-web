@@ -1,0 +1,25 @@
+[
+  {
+    "id": 9001,
+    "id_usuario": 1,
+    "fecha": "2025-08-20T14:35:00-03:00",
+    "total": 30000,
+    "direccion": "Av. Colón 1234, Córdoba",
+    "pagado": true,
+    "productos": [
+      {"id_producto": 102, "cantidad": 1, "precio_unitario": 12000},
+      {"id_producto": 103, "cantidad": 1, "precio_unitario": 15000}
+    ]
+  },
+  {
+    "id": 9002,
+    "id_usuario": 3,
+    "fecha": "2025-08-21T10:00:00-03:00",
+    "total": 18000,
+    "direccion": "Bv. San Juan 800, Córdoba",
+    "pagado": false,
+    "productos": [
+      {"id_producto": 101, "cantidad": 1, "precio_unitario": 18000}
+    ]
+  }
+]

@@ -1,0 +1,5 @@
+[
+  {"id": 1, "nombre": "Milagros", "apellido": "López", "email": "mlopez@gmail.com", "contrasena": "hashed_123", "activo": true},
+  {"id": 2, "nombre": "Emilia", "apellido": "Peralta", "email": "eperalta@gmail.com", "contrasena": "hashed_456", "activo": true},
+  {"id": 3, "nombre": "Luz", "apellido": "Gómez", "email": "lgomez@gmail.com", "contrasena": "hashed_789", "activo": false}
+]
