@@ -9,3 +9,5 @@ Este proyecto incluye 3 estructuras de datos en formato JSON (**usuarios**, **pr
   - `productos[]`: `{id_producto, cantidad, precio_unitario}`
 
 Incluyen **numéricos**, **cadenas** y **booleanos**, y mantienen coherencia entre sí (ids referenciados).
+
+**Demo online:** https://nailopezv.github.io/twins-estetica-web/
