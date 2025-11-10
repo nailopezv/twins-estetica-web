@@ -1,0 +1,21 @@
+{
+  "name": "twins-estetica-web",
+  "version": "1.0.0",
+  "description": "Este proyecto incluye 3 estructuras de datos en formato JSON (**usuarios**, **productos**, **ventas**) para una estitica llamada **Twins Estetica**",
+  "main": "app.js",
+  "scripts": {
+      "dev": "nodemon server.js",
+      "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
