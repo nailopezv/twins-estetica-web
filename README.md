@@ -34,3 +34,5 @@ npm install
 
 # Ejecutar en modo desarrollo (con nodemon)
 npm run dev
+
+API local: http://localhost:3000/api/productos
