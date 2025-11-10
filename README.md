@@ -11,3 +11,26 @@ Este proyecto incluye 3 estructuras de datos en formato JSON (**usuarios**, **pr
 Incluyen **numéricos**, **cadenas** y **booleanos**, y mantienen coherencia entre sí (ids referenciados).
 
 **Demo online:** https://nailopezv.github.io/twins-estetica-web/
+
+---
+
+## Segunda entrega – API con Express.js
+
+Se agrega un servidor en **Node.js + Express** para gestionar las mismas estructuras de datos (`usuarios.json`, `productos.json`, `ventas.json`) mediante endpoints REST.
+
+> La API se ejecuta localmente. La versión de GitHub Pages solo sirve la parte estática (HTML/CSS/JS).
+
+### Cómo ejecutar el servidor
+
+Requisitos: Node.js instalado.
+
+```bash
+# Clonar el repo
+git clone https://github.com/nailopezv/twins-estetica-web.git
+cd twins-estetica-web
+
+# Instalar dependencias
+npm install
+
+# Ejecutar en modo desarrollo (con nodemon)
+npm run dev
