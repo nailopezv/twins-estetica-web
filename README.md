@@ -33,13 +33,13 @@ npm install
 # Ejecutar en modo desarrollo (con nodemon)
 npm run dev
 
+```
+
 ---
 
-# TP3 - Carrito de compras + Servidor Express
+## Tercera entrega - Carrito de compras + Servidor Express
 
 Se conecta a un servidor con una interfaz web usando HTML, CSS, JavaScript y Node.js con Express.
-
----
 
 ## Funcionalidades implementadas
 
@@ -80,3 +80,4 @@ Se conecta a un servidor con una interfaz web usando HTML, CSS, JavaScript y Nod
   - total de la compra
 
 ---
+
