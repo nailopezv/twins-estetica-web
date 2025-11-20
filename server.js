@@ -1,3 +1,8 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = 'cambia-este-texto-por-algo-mas-largo-y-unico';
+
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -29,6 +34,28 @@ function saveJson(fileName, data) {
   const filePath = path.join(__dirname, 'data', fileName);
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
+
+const readJSON = async (filePath) => {
+  try {
+    const data = await fs.promises.readFile(filePath, 'utf-8');
+    return data ? JSON.parse(data) : [];
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+    
+      return [];
+    }
+    throw err;
+  }
+};
+
+const writeJSON = async (filePath, data) => {
+  await fs.promises.writeFile(
+    filePath,
+    JSON.stringify(data, null, 2),
+    'utf-8'
+  );
+};
+
 /*  2 GET para consultar datos  */
 
 // GET /api/productos
@@ -69,47 +96,47 @@ app.get('/api/ventas', (req, res) => {
 
 // POST /api/usuarios
 app.post('/api/usuarios', async (req, res) => {
-  const { nombre, apellido, email, contrasena, activo = true } = req.body;
+  try {
+    const { nombre, apellido, email, password } = req.body;
 
-  if (!nombre || !apellido || !email) {
-    return res.status(400).json({
-      error: 'Faltan campos obligatorios: nombre, apellido, email'
-    });
+    const usuarios = await readJSON(fUsuarios);
+
+    // hash de la contraseña
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const nuevoUsuario = {
+      id: (usuarios.at(-1)?.id || 0) + 1,
+      nombre,
+      apellido,
+      email,
+      passwordHash,   // ✅ guardamos el hash, NO el texto plano
+      activo: true
+    };
+
+    usuarios.push(nuevoUsuario);
+    await writeJSON(fUsuarios, usuarios);
+
+    // no devolvemos el hash
+    const { passwordHash: _, ...usuarioSinPass } = nuevoUsuario;
+
+    res.status(201).json(usuarioSinPass);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error al crear usuario' });
   }
-
-  const usuarios = await readJSON(fUsuarios);
-  const nuevoId = (usuarios.at(-1)?.id || 0) + 1;
-
-  const nuevoUsuario = {
-    id: nuevoId,
-    nombre,
-    apellido,
-    email,
-    contrasena: contrasena || 'hashed_auto',
-    activo: !!activo
-  };
-
-  usuarios.push(nuevoUsuario);
-  await writeJSON(fUsuarios, usuarios);
-
-  res.status(201).json(nuevoUsuario);
 });
 
 // POST /api/ventas
-app.post('/api/ventas', (req, res) => {
+
+app.post('/api/ventas', authMiddleware, async (req, res) => {
   try {
-    const { id_usuario, productos, total, direccion, pagado, fecha } = req.body;
-
-    if (!id_usuario || !productos || !Array.isArray(productos) || productos.length === 0) {
-      return res.status(400).json({ mensaje: 'Datos de compra incompletos' });
-    }
-
-    const ventas = loadJson('ventas.json');
+    const ventas = await readJSON(fVentas);
+    const { productos, total, direccion, pagado } = req.body;
 
     const nuevaVenta = {
       id: Date.now(),
-      id_usuario,
-      fecha: fecha || new Date().toISOString(),
+      id_usuario: req.user.id,
+      fecha: new Date().toISOString(),
       total,
       direccion: direccion || '',
       productos,
@@ -117,14 +144,16 @@ app.post('/api/ventas', (req, res) => {
     };
 
     ventas.push(nuevaVenta);
-    saveJson('ventas.json', ventas);
+    await writeJSON(fVentas, ventas);
 
-    res.json({ mensaje: 'Compra registrada correctamente', venta: nuevaVenta });
+    res.status(201).json({ mensaje: 'Venta registrada', venta: nuevaVenta });
   } catch (err) {
-    console.error('Error al registrar compra:', err);
-    res.status(500).json({ mensaje: 'Error al registrar la compra' });
+    console.error('Error en /api/ventas:', err);
+    res.status(500).json({ error: 'Error al registrar la venta' });
   }
 });
+
+
  
 /* 1 PUT para actualizar registros */
 
@@ -172,6 +201,78 @@ app.delete('/api/usuarios/:id', async (req, res) => {
   await writeJSON(fUsuarios, nuevosUsuarios);
   res.json({ ok: true });
 });
+
+// POST api login
+
+app.post('/api/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const usuarios = await readJSON(fUsuarios);
+    const usuario = usuarios.find(u => u.email === email);
+
+    if (!usuario) {
+      return res.status(400).json({ error: 'Credenciales inválidas' });
+    }
+
+    let ok = false;
+
+    // Si tiene passwordHash, lo usamos
+    if (usuario.passwordHash) {
+      ok = await bcrypt.compare(password, usuario.passwordHash);
+    }
+    // Si tiene "contraseña", vemos si ya es un hash o texto plano
+    else if (usuario.contrasena) {
+      const c = usuario.contrasena;
+
+      // Si parece un hash de bcrypt (empieza con $2a o $2b), lo comparamos con bcrypt
+      if (typeof c === 'string' && (c.startsWith('$2a$') || c.startsWith('$2b$'))) {
+        ok = await bcrypt.compare(password, c);
+      } else {
+      
+        ok = password === c;
+      }
+    }
+
+    if (!ok) {
+      return res.status(400).json({ error: 'Credenciales inválidas' });
+    }
+
+    // Creamos el token
+    const payload = { id: usuario.id, email: usuario.email };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '2h' });
+
+    const { passwordHash, contrasena, ...usuarioSinPass } = usuario;
+
+    res.json({
+      mensaje: 'Login correcto',
+      token,
+      usuario: usuarioSinPass
+    });
+  } catch (err) {
+    console.error('Error en login:', err);
+    res.status(500).json({ error: 'Error en login' });
+  }
+});
+
+
+// Middleware
+function authMiddleware(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token requerido' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Token inválido' });
+    }
+    req.user = user; // { id, email }
+    next();
+  });
+}
 
 /*  Servir archivos estáticos (opcional) */
 app.get('/', (req, res) => {

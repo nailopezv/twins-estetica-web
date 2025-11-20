@@ -1,3 +1,19 @@
+<section id="login">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <label>
+      Email:
+      <input type="email" id="loginEmail" required>
+    </label>
+    <label>
+      Contraseña:
+      <input type="password" id="loginPassword" required>
+    </label>
+    <button type="submit">Iniciar sesión</button>
+  </form>
+  <p id="loginMensaje" class="muted"></p>
+</section>
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -47,8 +63,6 @@
   <div id="carrito"></div>
 
   <div id="carritoAcciones" style="display:none; margin-top:12px;">
-    <label for="usuarioSelect"><strong>Usuario:</strong></label>
-    <select id="usuarioSelect"></select>
 
     <button id="comprarBtn" class="button-gold">
       Confirmar compra

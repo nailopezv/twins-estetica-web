@@ -32,14 +32,14 @@ npm install
 
 # Ejecutar en modo desarrollo (con nodemon)
 npm run dev
-
 ```
-
 ---
 
-## Tercera entrega - Carrito de compras + Servidor Express
+# Tercera entrega - Carrito de compras + Servidor Express
 
 Se conecta a un servidor con una interfaz web usando HTML, CSS, JavaScript y Node.js con Express.
+
+---
 
 ## Funcionalidades implementadas
 
@@ -81,3 +81,21 @@ Se conecta a un servidor con una interfaz web usando HTML, CSS, JavaScript y Nod
 
 ---
 
+## Cuarta Entrega – Seguridad de usuarios (bcrypt + JWT)
+
+Se agregó una capa de seguridad sobre los usuarios y las acciones sensibles:
+
+- Las contraseñas ya no se manejan en texto plano.  
+- Se implementa login de usuario con validación de credenciales.
+- Al iniciar sesión se genera un token **JWT** con `id` y `email` del usuario.
+- El token se envía en el header `Authorization: Bearer <token>`.
+- La ruta `POST /api/ventas` está protegida con un middleware `authMiddleware` que:
+  - Verifica el JWT.
+  - Extrae `req.user.id`.
+  - Asigna ese id a `id_usuario` en la venta.
+- Desde el front:
+  - Si no hay token, no permite comprar y muestra el mensaje
+    *"Tenés que iniciar sesión para realizar una compra."*.
+  - Luego de loguearse, la compra se registra correctamente vinculada al usuario autenticado.
+
+De esta forma, la acción de comprar queda restringida a usuarios logueados y las contraseñas dejan de estar expuestas en texto plano.

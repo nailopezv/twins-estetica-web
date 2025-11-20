@@ -1,3 +1,39 @@
+let tokenJWT = null;
+
+const loginForm = document.getElementById('loginForm');
+const loginMensaje = document.getElementById('loginMensaje');
+
+if (loginForm) {
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginMensaje.textContent = '';
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      const resp = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(data.error || 'Error al iniciar sesión');
+      }
+
+      tokenJWT = data.token;
+
+      loginMensaje.textContent = `Sesión iniciada como ${data.usuario.nombre}`;
+    } catch (err) {
+      console.error(err);
+      loginMensaje.textContent = err.message;
+    }
+  });
+}
+
 async function cargarJSON(ruta) {
   const r = await fetch(ruta);
   if (!r.ok) throw new Error('Error al cargar ' + ruta);
@@ -113,18 +149,6 @@ function popularSelectCategorias() {
   });
 }
 
-function popularSelectUsuarios() {
-  const sel = $('#usuarioSelect');
-  if (!sel) return;
-
-  sel.innerHTML = '<option value="">Seleccioná un usuario...</option>';
-  usuariosGlobal.forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u.id;
-    opt.textContent = `${u.nombre} ${u.apellido}`;
-    sel.appendChild(opt);
-  });
-}
 
 // ====== Ventas ======
 function calcularTotalVenta(venta) {
@@ -187,6 +211,12 @@ function renderCarrito() {
   const acciones = $('#carritoAcciones');
   const countSpan = $('#cartCount');
 
+  const msgEl = document.getElementById('carritoMensaje');
+  if (msgEl) {
+    msgEl.textContent = '';
+    msgEl.classList.remove('mensaje-ok', 'mensaje-error');
+  }
+
   if (!cont || !vacio || !acciones || !countSpan) {
     console.warn('Elementos del carrito no encontrados en el DOM');
     return;
@@ -241,20 +271,19 @@ async function realizarCompra() {
     msgEl.classList.remove('mensaje-ok', 'mensaje-error');
   }
 
-  if (!carrito.length) {
+  // ⛔ Si no hay token, no se puede comprar
+  if (!tokenJWT) {
     if (msgEl) {
-      msgEl.textContent = 'El carrito está vacío.';
+      msgEl.textContent = 'Tenés que iniciar sesión para realizar una compra.';
       msgEl.classList.add('mensaje-error');
     }
     return;
   }
 
-  const selectUsuario = document.getElementById('usuarioSelect');
-  const usuarioId = Number(selectUsuario && selectUsuario.value);
-
-  if (!usuarioId) {
+  // Carrito vacío
+  if (!carrito.length) {
     if (msgEl) {
-      msgEl.textContent = 'Seleccioná un usuario para la compra.';
+      msgEl.textContent = 'El carrito está vacío.';
       msgEl.classList.add('mensaje-error');
     }
     return;
@@ -269,7 +298,6 @@ async function realizarCompra() {
   }));
 
   const body = {
-    id_usuario: usuarioId,
     productos,
     total,
     direccion: 'Sin dirección',
@@ -277,44 +305,45 @@ async function realizarCompra() {
   };
 
   try {
-  const resp = await fetch('/api/ventas', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
+    const resp = await fetch('/api/ventas', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + tokenJWT
+      },
+      body: JSON.stringify(body)
+    });
 
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.mensaje || err.error || 'Error al registrar la venta');
-  }
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.mensaje || err.error || 'Error al registrar la venta');
+    }
 
-  const data = await resp.json();
-  const ventaCreada = data.venta || data;
+    const data = await resp.json();
+    const ventaCreada = data.venta || data;
 
-  // ✅ POPUP INMEDIATO
-  alert(`Compra registrada correctamente (venta #${ventaCreada.id}).`);
+    alert(`Compra registrada correctamente (venta #${ventaCreada.id}).`);
 
-  // ✅ Mensaje debajo del botón (como ya tenías)
-  if (msgEl) {
-    msgEl.textContent = `Compra registrada correctamente (venta #${ventaCreada.id}).`;
-    msgEl.classList.add('mensaje-ok');
-  }
+    if (msgEl) {
+      msgEl.textContent = `Compra registrada correctamente (venta #${ventaCreada.id}).`;
+      msgEl.classList.add('mensaje-ok');
+    }
 
-  ventasGlobal.push(ventaCreada);
-  renderVentas();
+    ventasGlobal.push(ventaCreada);
+    renderVentas();
 
-  carrito = [];
-  guardarCarrito();
-  renderCarrito();
-
-} catch (err) {
-  console.error(err);
-  if (msgEl) {
-    msgEl.textContent = 'Error al registrar la compra: ' + err.message;
-    msgEl.classList.add('mensaje-error');
+    carrito = [];
+    guardarCarrito();
+    renderCarrito();
+  } catch (err) {
+    console.error(err);
+    if (msgEl) {
+      msgEl.textContent = 'Error al registrar la compra: ' + err.message;
+      msgEl.classList.add('mensaje-error');
+    }
   }
 }
-}
+
 
 // ====== Eventos ======
 function registrarEventos() {
@@ -394,8 +423,7 @@ async function init() {
     cargarCarritoDesdeLocalStorage();
 
     popularSelectCategorias();
-    popularSelectUsuarios();
-
+  
     renderProductos('todas');
     renderUsuarios();
     renderCarrito();
