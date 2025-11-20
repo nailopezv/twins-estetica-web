@@ -1,6 +1,39 @@
 [
-  {"id": 101, "nombre": "Lifting de pestañas", "desc": "Realce y curvatura natural de pestañas.", "precio": 18000, "imagen": "img/lifting.jpg", "activo": true},
-  {"id": 102, "nombre": "Perfilado de cejas", "desc": "Diseño y perfilado con terminación prolija.", "precio": 12000, "imagen": "img/cejas.jpeg", "activo": true},
-  {"id": 103, "nombre": "Manicuría semipermanente", "desc": "Esmaltado semipermanente + forma.", "precio": 15000, "imagen": "img/semi.jpeg", "activo": true},
-  {"id": 104, "nombre": "Maquillaje social", "desc": "Look de noche para eventos.", "precio": 30000, "imagen": "img/maquillaje.jpeg", "activo": false}
+  {
+    "id": 101,
+    "nombre": "Lifting de pestañas",
+    "desc": "Realce y curvatura natural de pestañas.",
+    "precio": 18000,
+    "imagen": "img/lifting.jpg",
+    "categoria": "Pestañas",
+    "activo": true
+  },
+  {
+    "id": 102,
+    "nombre": "Perfilado de cejas",
+    "desc": "Diseño y perfilado con terminación prolija.",
+    "precio": 12000,
+    "imagen": "img/cejas.jpeg",
+    "categoria": "Cejas",
+    "activo": true
+  },
+  {
+    "id": 103,
+    "nombre": "Manicuría semipermanente",
+    "desc": "Esmaltado semipermanente + forma.",
+    "precio": 15000,
+    "imagen": "img/semi.jpeg",
+    "categoria": "Uñas",
+    "activo": true
+  },
+  {
+    "id": 104,
+    "nombre": "Maquillaje social",
+    "desc": "Look de noche para eventos.",
+    "precio": 30000,
+    "imagen": "img/maquillaje.jpeg",
+    "categoria": "Maquillaje",
+    "activo": false
+  }
 ]
+
