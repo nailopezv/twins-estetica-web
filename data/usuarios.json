@@ -12,7 +12,7 @@
     "nombre": "Emilia",
     "apellido": "Peralta",
     "email": "eperalta@gmail.com",
-    "contrasena": "hashed_456",
+    "contrasena": "123456",
     "activo": true
   },
   {
