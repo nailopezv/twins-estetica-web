@@ -1,14 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs/promises');
+const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+app.use(express.static(__dirname));
 
 // Paths a los JSON
 const dataDir     = path.join(__dirname, 'data');
@@ -17,32 +19,50 @@ const fProductos = path.join(dataDir, 'productos.json');
 const fVentas    = path.join(dataDir, 'ventas.json');
 
 // Helpers para leer/escribir JSON
-async function readJSON(file) {
-  const raw = await fs.readFile(file, 'utf-8');
+function loadJson(fileName) {
+  const filePath = path.join(__dirname, 'data', fileName);
+  const raw = fs.readFileSync(filePath, 'utf8');
   return JSON.parse(raw);
 }
-async function writeJSON(file, data) {
-  await fs.writeFile(file, JSON.stringify(data, null, 2), 'utf-8');
-}
 
+function saveJson(fileName, data) {
+  const filePath = path.join(__dirname, 'data', fileName);
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+}
 /*  2 GET para consultar datos  */
 
 // GET /api/productos
-app.get('/api/productos', async (req, res) => {
-  const productos = await readJSON(fProductos);
-  res.json(productos);
+app.get('/api/productos', (req, res) => {
+  try {
+    const productos = loadJson('productos.json');
+    res.json(productos);
+  } catch (err) {
+    console.error('Error al leer productos:', err);
+    res.status(500).send('Error al leer productos');
+  }
 });
 
+
 // GET /api/usuarios
-app.get('/api/usuarios', async (req, res) => {
-  const usuarios = await readJSON(fUsuarios);
-  res.json(usuarios);
+app.get('/api/usuarios', (req, res) => {
+  try {
+    const usuarios = loadJson('usuarios.json');
+    res.json(usuarios);
+  } catch (err) {
+    console.error('Error al leer usuarios:', err);
+    res.status(500).send('Error al leer usuarios');
+  }
 });
 
 // (extra) GET /api/ventas -> lista de ventas
-app.get('/api/ventas', async (req, res) => {
-  const ventas = await readJSON(fVentas);
-  res.json(ventas);
+app.get('/api/ventas', (req, res) => {
+  try {
+    const ventas = loadJson('ventas.json');
+    res.json(ventas);
+  } catch (err) {
+    console.error('Error al leer ventas:', err);
+    res.status(500).send('Error al leer ventas');
+  }
 });
 
 /* 2 POST para crear registros*/
@@ -76,61 +96,36 @@ app.post('/api/usuarios', async (req, res) => {
 });
 
 // POST /api/ventas
-app.post('/api/ventas', async (req, res) => {
-  const { id_usuario, direccion = '', productos = [], pagado = false, fecha } = req.body;
+app.post('/api/ventas', (req, res) => {
+  try {
+    const { id_usuario, productos, total, direccion, pagado, fecha } = req.body;
 
-  if (!id_usuario || !Array.isArray(productos) || productos.length === 0) {
-    return res.status(400).json({
-      error: 'id_usuario y productos[] son obligatorios'
-    });
-  }
-
-  const [usuarios, catalogo, ventas] = await Promise.all([
-    readJSON(fUsuarios),
-    readJSON(fProductos),
-    readJSON(fVentas)
-  ]);
-
-  // validar usuario
-  const existeUsuario = usuarios.some(u => u.id === Number(id_usuario));
-  if (!existeUsuario) {
-    return res.status(400).json({ error: 'id_usuario inexistente' });
-  }
-
-  // mapa de productos para validar
-  const prodMap = Object.fromEntries(catalogo.map(p => [p.id, p]));
-
-  let total = 0;
-  for (const item of productos) {
-    const prod = prodMap[item.id_producto];
-    if (!prod) {
-      return res.status(400).json({ error: `id_producto ${item.id_producto} inexistente` });
+    if (!id_usuario || !productos || !Array.isArray(productos) || productos.length === 0) {
+      return res.status(400).json({ mensaje: 'Datos de compra incompletos' });
     }
-    const cantidad = Number(item.cantidad || 1);
-    const precio = Number(item.precio_unitario ?? prod.precio);
-    item.cantidad = cantidad;
-    item.precio_unitario = precio;
-    total += cantidad * precio;
+
+    const ventas = loadJson('ventas.json');
+
+    const nuevaVenta = {
+      id: Date.now(),
+      id_usuario,
+      fecha: fecha || new Date().toISOString(),
+      total,
+      direccion: direccion || '',
+      productos,
+      pagado: pagado ?? true
+    };
+
+    ventas.push(nuevaVenta);
+    saveJson('ventas.json', ventas);
+
+    res.json({ mensaje: 'Compra registrada correctamente', venta: nuevaVenta });
+  } catch (err) {
+    console.error('Error al registrar compra:', err);
+    res.status(500).json({ mensaje: 'Error al registrar la compra' });
   }
-
-  const nuevoId = (ventas.at(-1)?.id || 0) + 1;
-
-  const nuevaVenta = {
-    id: nuevoId,
-    id_usuario: Number(id_usuario),
-    fecha: fecha || new Date().toISOString(),
-    total,
-    direccion,
-    pagado: !!pagado,
-    productos
-  };
-
-  ventas.push(nuevaVenta);
-  await writeJSON(fVentas, ventas);
-
-  res.status(201).json(nuevaVenta);
 });
-
+ 
 /* 1 PUT para actualizar registros */
 
 // PUT /api/usuarios/:id 
@@ -154,8 +149,6 @@ app.put('/api/usuarios/:id', async (req, res) => {
 
 /*  1 DELETE con integridad */
 
-// DELETE /api/usuarios/:id
-// No permite borrar si el usuario tiene ventas asociadas
 app.delete('/api/usuarios/:id', async (req, res) => {
   const id = Number(req.params.id);
 
@@ -181,9 +174,15 @@ app.delete('/api/usuarios/:id', async (req, res) => {
 });
 
 /*  Servir archivos estáticos (opcional) */
-app.use('/', express.static(__dirname));
-
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 // Arrancar servidor
 app.listen(PORT, () => {
   console.log(`API de Twins Estética escuchando en http://localhost:${PORT}`);
 });
+app.post('/api/comprar', (req, res) => {
+  const { usuario, productos, total } = req.body;
+
+});
+

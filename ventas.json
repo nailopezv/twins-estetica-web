@@ -1,0 +1,242 @@
+[
+  {
+    "id": 9001,
+    "id_usuario": 1,
+    "fecha": "2025-08-20T14:35:00-03:00",
+    "total": 30000,
+    "direccion": "Av. Colón 1234, Córdoba",
+    "pagado": true,
+    "productos": [
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      },
+      {
+        "id_producto": 103,
+        "cantidad": 1,
+        "precio_unitario": 15000
+      }
+    ]
+  },
+  {
+    "id": 9002,
+    "id_usuario": 3,
+    "fecha": "2025-08-21T10:00:00-03:00",
+    "total": 18000,
+    "direccion": "Bv. San Juan 800, Córdoba",
+    "pagado": false,
+    "productos": [
+      {
+        "id_producto": 101,
+        "cantidad": 1,
+        "precio_unitario": 18000
+      }
+    ]
+  },
+  {
+    "id": 9003,
+    "id_usuario": 1,
+    "fecha": "2025-11-10T21:28:08.499Z",
+    "total": 42000,
+    "direccion": "Av. Colón 1234, Córdoba",
+    "pagado": true,
+    "productos": [
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      },
+      {
+        "id_producto": 103,
+        "cantidad": 2,
+        "precio_unitario": 15000
+      }
+    ]
+  },
+  {
+    "id": 9004,
+    "id_usuario": 1,
+    "fecha": "2025-11-11T00:15:18.439Z",
+    "total": 12000,
+    "direccion": "Compra online Twins Studio",
+    "pagado": true,
+    "productos": [
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      }
+    ]
+  },
+  {
+    "id": 1763403844814,
+    "id_usuario": 2,
+    "fecha": "2025-11-17T18:24:04.776Z",
+    "total": 12000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763405942497,
+    "id_usuario": 1,
+    "fecha": "2025-11-17T18:59:02.484Z",
+    "total": 30000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 101,
+        "cantidad": 1,
+        "precio_unitario": 18000
+      },
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763407017513,
+    "id_usuario": 1,
+    "fecha": "2025-11-17T19:16:57.497Z",
+    "total": 15000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 103,
+        "cantidad": 1,
+        "precio_unitario": 15000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763407705590,
+    "id_usuario": 1,
+    "fecha": "2025-11-17T19:28:25.575Z",
+    "total": 18000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 101,
+        "cantidad": 1,
+        "precio_unitario": 18000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763663411428,
+    "id_usuario": 4,
+    "fecha": "2025-11-20T18:30:11.404Z",
+    "total": 18000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 101,
+        "cantidad": 1,
+        "precio_unitario": 18000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763663663774,
+    "id_usuario": 3,
+    "fecha": "2025-11-20T18:34:23.765Z",
+    "total": 12000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763668041652,
+    "id_usuario": 3,
+    "fecha": "2025-11-20T19:47:21.652Z",
+    "total": 45000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 101,
+        "cantidad": 1,
+        "precio_unitario": 18000
+      },
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      },
+      {
+        "id_producto": 103,
+        "cantidad": 1,
+        "precio_unitario": 15000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763669841510,
+    "id_usuario": 1,
+    "fecha": "2025-11-20T20:17:21.510Z",
+    "total": 30000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 104,
+        "cantidad": 1,
+        "precio_unitario": 30000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763669893232,
+    "id_usuario": 2,
+    "fecha": "2025-11-20T20:18:13.232Z",
+    "total": 12000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 102,
+        "cantidad": 1,
+        "precio_unitario": 12000
+      }
+    ],
+    "pagado": true
+  },
+  {
+    "id": 1763670239009,
+    "id_usuario": 4,
+    "fecha": "2025-11-20T20:23:59.009Z",
+    "total": 33000,
+    "direccion": "Sin dirección",
+    "productos": [
+      {
+        "id_producto": 101,
+        "cantidad": 1,
+        "precio_unitario": 18000
+      },
+      {
+        "id_producto": 103,
+        "cantidad": 1,
+        "precio_unitario": 15000
+      }
+    ],
+    "pagado": true
+  }
+]

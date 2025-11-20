@@ -22,8 +22,42 @@
   <main class="wrap">
     <section>
       <h2>Productos</h2>
-      <div id="productos" class="grid"></div>
-    </section>
+  <div class="productos-header">
+    <div class="filtro">
+      <label for="categoriaSelect">Filtrar por categoría:</label>
+      <select id="categoriaSelect">
+        <option value="todas">Todas</option>
+      </select>
+    </div>
+    <div class="carrito-resumen">
+      🛒 Carrito: <span id="cartCount">0</span> productos
+    </div>
+  </div>
+
+  <div id="productos" class="grid"></div>
+</section>
+
+<section>
+  <h2>Carrito de compras</h2>
+
+  <div id="carritoVacio" class="muted">
+    Todavía no agregaste productos al carrito.
+  </div>
+
+  <div id="carrito"></div>
+
+  <div id="carritoAcciones" style="display:none; margin-top:12px;">
+    <label for="usuarioSelect"><strong>Usuario:</strong></label>
+    <select id="usuarioSelect"></select>
+
+    <button id="comprarBtn" class="button-gold">
+      Confirmar compra
+    </button>
+
+    <div id="carritoMensaje" class="muted" style="margin-top:8px;"></div>
+  </div>
+</section>
+
 
     <section>
       <h2>Usuarios</h2>
@@ -32,7 +66,7 @@
 
     <section>
       <h2>Ventas</h2>
-      <div id="ventas"></div>
+        <div id="ventas-lista" class="ventas-lista"></div>
     </section>
   </main>
 
