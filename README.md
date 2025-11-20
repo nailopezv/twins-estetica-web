@@ -10,8 +10,6 @@ Este proyecto incluye 3 estructuras de datos en formato JSON (**usuarios**, **pr
 
 Incluyen **numéricos**, **cadenas** y **booleanos**, y mantienen coherencia entre sí (ids referenciados).
 
-**Demo online:** https://nailopezv.github.io/twins-estetica-web/
-
 ---
 
 ## Segunda entrega – API con Express.js
@@ -35,4 +33,50 @@ npm install
 # Ejecutar en modo desarrollo (con nodemon)
 npm run dev
 
-API local: http://localhost:3000/api/productos
+---
+
+# TP3 - Carrito de compras + Servidor Express
+
+Se conecta a un servidor con una interfaz web usando HTML, CSS, JavaScript y Node.js con Express.
+
+---
+
+## Funcionalidades implementadas
+
+### Listado de productos
+- Se cargan desde el servidor mediante `/api/productos`.
+- Se muestran en tarjetas con nombre, precio, descripción e imagen.
+
+### Filtrado por categoría
+- Un selector permite borrar por categoría sin recargar la página.
+
+### Carrito de compras
+- Agregar productos
+- Aumentar, disminuir o quitar
+- Se guarda automáticamente en **localStorage**
+- Se muestra el total actualizado
+
+### Selección de usuario comprador
+- Selector dinámico cargado desde `/api/usuarios`.
+
+### Realizar compra
+- Enviar compra al backend mediante `POST /api/ventas`
+- Genera:
+  - id de venta
+  - usuario comprador
+  - productos comprados
+  - totales
+  - fecha automática
+- La venta se **guarda en `ventas.json`**.
+- Se actualiza en pantalla de forma instantánea.
+
+### Listado de ventas
+- Muestra todas las ventas guardadas en el backend.
+- Incluye:
+  - fecha formateada
+  - cliente
+  - dirección
+  - detalle de productos
+  - total de la compra
+
+---
